@@ -1,0 +1,23 @@
+Models
+User–Listing (one-to-many): A user can post many listings (as an owner).
+User–Rental (one-to-many): A user can rent many vehicles (as a renter).
+Listing–Rental (one-to-many): A listing can be rented multiple times over its lifetime.
+
+API
+Users: 
+Get all users.
+Get a user by ID. 
+Create a new user. 
+Delete a user and their data. 
+Listings:
+Get all listings.
+Get a specific listing. 
+Create a new listing.
+Update an existing listing.
+Delete a listing.
+Rentals:
+Get all rentals.
+Get a specific rental.
+Create a new rental. 
+Delete a rental.
+
