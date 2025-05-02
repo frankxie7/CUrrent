@@ -37,6 +37,8 @@ class Listing(db.Model):
     available_from = db.Column(db.Date, nullable=False)
     available_to = db.Column(db.Date, nullable=False)
     is_rented = db.Column(db.Boolean, default=False)
+    original_available_from = db.Column(db.Date, nullable=False)
+    original_available_to = db.Column(db.Date, nullable=False)
 
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
@@ -72,6 +74,7 @@ class Rental(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     listing_id = db.Column(db.Integer, db.ForeignKey('listing.id'), nullable=False)
+ 
 
     def serialize(self):
         return {
