@@ -1,4 +1,4 @@
-package com.example.current.ui.screens
+package com.example.myapp.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.current.Greeting
-import com.example.current.ui.theme.MyAppTheme
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun CarDetailScreen(carId: String, navController: NavController) {
@@ -82,7 +81,7 @@ fun CarDetailScreen(carId: String, navController: NavController) {
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = "★ ${car.renterRating} (95 reviews)", // you can make review count dynamic later
+                    text = "★ ${car.renterRating} (95 reviews)",
                     fontSize = 14.sp
                 )
             }
@@ -124,17 +123,17 @@ fun CarDetailScreen(carId: String, navController: NavController) {
             fontSize = 14.sp
         )
 
-
         Spacer(Modifier.weight(1f))
         Row {
             Button(
-                onClick = { navController.navigate("confirm/${car.id}") },
+                onClick = {
+                    navController.navigate("checkout/${car.id}")
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Rent This Car", fontSize = 18.sp)
             }
         }
-
     }
 }
 

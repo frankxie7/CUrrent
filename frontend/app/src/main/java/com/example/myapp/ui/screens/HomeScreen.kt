@@ -1,9 +1,7 @@
-package com.example.current.ui.screens
+package com.example.myapp.ui.screens
 
-import android.R.attr.onClick
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,13 +12,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api // it may leave soon 
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -44,6 +40,7 @@ data class Car(
     val renterName: String,
     val renterRating: Double
 )
+
 val allCars = listOf(
     Car(
         id = "1",
@@ -62,10 +59,11 @@ Special: Crew radio, trash talk cam, Kachow underglow""",
         listedDate = "April 27, 2025, 3:45 PM",
         availability = "April 29 – May 2, 2025",
         pickupWindow = "8:00 AM – 8:00 PM",
-        imageUrl = "https://images.unsplash.com/photo-1603826561566-b1735c34c893", // red race car
+        imageUrl = "https://images.unsplash.com/photo-1603826561566-b1735c34c893",
         renterName = "Owen Wilson",
         renterRating = 5.0
-    ))
+    )
+)
 
 @Composable
 fun CarListItem(car: Car, onClick: () -> Unit) {
@@ -76,24 +74,23 @@ fun CarListItem(car: Car, onClick: () -> Unit) {
             .padding(12.dp)
     ) {
         Column(Modifier.weight(1f)) {
-            Text(text = car.name, style = MaterialTheme.typography.titleMedium)
-            Text(text = "$${car.pricePerDay}/day", style = MaterialTheme.typography.bodyMedium)
+            Text(text = car.name, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(text = "$${car.pricePerDay}/day", fontSize = 14.sp, fontWeight = FontWeight.Normal)
         }
     }
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
-@Override
+@OptIn(ExperimentalMaterial3Api::class) // apparently this sht leaving soon
 fun HomeScreen(
     navController: NavController
 ) {
     var selectedType by remember { mutableStateOf(VehicleType.Car) }
     val filteredCars = allCars.filter { it.type == selectedType }
 
-    Scaffold( // good for automatic padding and more smart than rows
+    Scaffold(
         topBar = {
-            TopAppBar( // just the upper bar
+            TopAppBar(
                 title = {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         Text(
@@ -104,13 +101,12 @@ fun HomeScreen(
                         )
                     }
                 },
-
                 navigationIcon = {
-                    IconButton(onClick = { }) { // if i click on the icon, then it does some shit
+                    IconButton(onClick = { }) {
                         Icon(
                             Icons.Default.Menu,
                             contentDescription = "Menu"
-                        ) // uses default icon for menu
+                        )
                     }
                 },
                 actions = {
@@ -118,7 +114,7 @@ fun HomeScreen(
                         Icon(
                             Icons.Default.Person,
                             contentDescription = "Profile"
-                        ) // uses default icon for profile
+                        )
                     }
                 }
             )
@@ -130,7 +126,7 @@ fun HomeScreen(
                 .padding(16.dp)
         ) {
             ScrollableTabRow(selectedTabIndex = selectedType.ordinal) {
-                VehicleType.entries.forEachIndexed { index, type -> // for each of the values in Vehcile types, it creates something there
+                VehicleType.entries.forEachIndexed { index, type ->
                     Tab(
                         selected = selectedType.ordinal == index,
                         onClick = { selectedType = type },
@@ -139,13 +135,15 @@ fun HomeScreen(
                 }
             }
 
-            Spacer(Modifier.height(16.dp));
+            Spacer(Modifier.height(16.dp))
 
             LazyColumn {
-                items(filteredCars) { car ->
+                items(filteredCars) { car -> // filter by type of car
                     CarListItem(car = car) {
+                        println("Clicked on car ID: ${car.id}")
                         navController.navigate("carDetail/${car.id}")
                     }
+
                     HorizontalDivider()
                 }
             }

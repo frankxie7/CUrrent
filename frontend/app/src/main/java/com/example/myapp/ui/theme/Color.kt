@@ -1,4 +1,4 @@
-package com.example.current.ui.theme
+package com.example.myapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
