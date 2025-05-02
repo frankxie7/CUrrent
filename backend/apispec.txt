@@ -1,0 +1,81 @@
+GET http://127.0.0.1:8000/api/users/
+{"Users" : <List of all users}, 200
+
+POST http://127.0.0.1:8000/api/users/
+{
+  "name": "Alice Smith",
+  "email": "alice@example.com"
+}
+{"id": 1, "name": "Alice Smith", "email": "alice@example.com", "listings": [], "rentals": []} , 201
+
+GET http://127.0.0.1:8000/api/users/1/
+EXAMPLE:
+{"id": 1, "name": "Alice Smith", "email": "alice@example.com", "listings": [], "rentals": []}, 200
+
+DELETE http://127.0.0.1:8000/api/users/2/
+{"id": 2, "name": "John doe", "email": "john@example.com", "listings": [], "rentals": []} , 200
+
+GET http://127.0.0.1:8000/api/listings/
+{"listings": <List of all listings>}
+
+POST http://127.0.0.1:8000/api/listings/
+{
+  "vehicle_type": "Sedan",
+  "price_per_day": 45.99,
+  "available_from": "2025-05-10",
+  "available_to": "2025-05-20",
+  "owner_id": 1
+}
+EXAMPLE: 
+{"id": 1, "vehicle_type": "Sedan", "price_per_day": 45.99, "available_from": "2025-05-10", "available_to": "2025-05-20",
+"is_rented": false, "owner": {"id": 1, "name": "Alice Smith", "email": "alice@example.com"}} , 201
+
+GET http://127.0.0.1:8000/api/listings/1/
+EXAMPLE:
+{"id": 1, "vehicle_type": "Convertible", "price_per_day": 75.5, "available_from": "2025-05-21", "available_to":
+"2025-05-25", "is_rented": false, "owner": {"id": 1, "name": "Alice Smith", "email": "alice@example.com"}} , 200
+
+DELETE http://127.0.0.1:8000/api/listings/2/ 
+EXAMPLE:
+{"id": 2, "vehicle_type": "Lambo twin", "price_per_day": 5000.99, "available_from": "2025-05-10", "available_to":
+"2025-05-20", "is_rented": false, "owner": {"id": 1, "name": "Alice Smith", "email": "alice@example.com"}} , 200
+
+PUT http://127.0.0.1:8000/api/listings/1/
+{
+  "vehicle_type": "Convertible",
+  "price_per_day": 75.50,
+  "available_from": "2025-05-15",
+  "available_to": "2025-05-25",
+  "is_rented": false,
+  "owner_id": 1
+}
+EXAMPLE:
+{"id": 1, "vehicle_type": "Convertible", "price_per_day": 75.5, "available_from": "2025-05-15", "available_to":
+"2025-05-25", "is_rented": false, "owner": {"id": 1, "name": "Alice Smith", "email": "alice@example.com"}} , 200
+
+GET http://127.0.0.1:8000/api/rentals/
+{"Rentals": <List of rentals>}
+
+POST http://127.0.0.1:8000/api/rentals/
+{
+  "start_date": "2025-05-15",
+  "end_date": "2025-05-20",
+  "user_id": 1,
+  "listing_id": 1
+}
+EXAMPLE: 
+{"id": 1, "start_date": "2025-05-15", "end_date": "2025-05-20", "renter": {"id": 1, "name": "Alice Smith", "email":
+"alice@example.com"}, "listing": {"id": 1, "vehicle_type": "Convertible", "price_per_day": 75.5, "available_from":
+"2025-05-21", "available_to": "2025-05-20", "is_rented": true}}
+
+GET http://127.0.0.1:8000/api/rentals/1/
+EXAMPLE:
+{"id": 1, "start_date": "2025-05-15", "end_date": "2025-05-20", "renter": {"id": 1, "name": "Alice Smith", "email":
+"alice@example.com"}, "listing": {"id": 1, "vehicle_type": "Convertible", "price_per_day": 75.5, "available_from":
+"2025-05-21", "available_to": "2025-05-25", "is_rented": false}}
+
+DELETE http://127.0.0.1:8000/api/rentals/1/
+EXAMPLE:
+{"id": 1, "start_date": "2025-05-15", "end_date": "2025-05-20", "renter": {"id": 1, "name": "Alice Smith", "email":
+"alice@example.com"}, "listing": {"id": 1, "vehicle_type": "Convertible", "price_per_day": 75.5, "available_from":
+"2025-05-10", "available_to": "2025-05-20", "is_rented": false}}
