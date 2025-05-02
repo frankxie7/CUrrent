@@ -26,7 +26,7 @@ def failure_response(message, code=404):
 def handle_users():
     if request.method == "GET":
         users = [u.serialize_no_relations() for u in User.query.all()]
-        return success_response({"courses": users})
+        return success_response({"Users": users})
     else: 
         try:
             body = json.loads(request.data)
@@ -41,7 +41,7 @@ def handle_users():
             return failure_response("Failed to create user", 400)
         
 #Handles specific user methods
-@app.route("/api/users/<int:user_id>",methods=["GET", "DELETE"])
+@app.route("/api/users/<int:user_id>/",methods=["GET", "DELETE"])
 def handle_specific_user(user_id):
     if request.method == "GET":
         user = User.query.filter_by(id=user_id).first()
@@ -80,7 +80,7 @@ def handle_listing():
         )
         db.session.add(new_listing)
         db.session.commit()
-        return success_response(new_listing.serialize())
+        return success_response(new_listing.serialize(),201)
 
 @app.route("/api/listings/<int:listing_id>/" , methods = ["GET", "DELETE","PUT"])
 def handle_specific_listing(listing_id):
@@ -93,12 +93,13 @@ def handle_specific_listing(listing_id):
         listing = Listing.query.filter_by(id=listing_id).first()
         if listing is None:
             return failure_response("Listing not found")
+        serialize = listing.serialize()
         db.session.delete(listing)
         db.session.commit()
-        return success_response(listing.serialize())
+        return success_response(serialize)
     elif request.method == "PUT":
         listing = Listing.query.filter_by(id=listing_id).first()
-        data = json.load(request.data)
+        data = request.get_json()
         if listing is None:
             return failure_response("Listing not found")
         if 'vehicle_type' in data:
@@ -122,7 +123,7 @@ def handle_specific_listing(listing_id):
 def handle_rentals():
     if request.method == "GET":
         rentals = [r.serialize_no_user() for r in Rental.query.all()]
-        return success_response({"listings": rentals})
+        return success_response({"Rentals": rentals})
     elif request.method == "POST":
         body = json.loads(request.data)
         required_fields = ['start_date', 'end_date', 'user_id', 'listing_id']
@@ -156,9 +157,10 @@ def handle_rentals():
             listing_id=listing.id
         )
         listing.available_from = end_date + timedelta(days=1)
+        listing.is_rented = True
         db.session.add(rental)
         db.session.commit()
-        return success_response(rental.serialize())
+        return success_response(rental.serialize(),201)
 @app.route("/api/rentals/<int:rental_id>/" , methods = ["GET","DELETE"])
 def handle_specific_rental(rental_id):
     if request.method == "GET":
@@ -173,10 +175,11 @@ def handle_specific_rental(rental_id):
         listing.available_from = listing.original_available_from
         listing.available_to = listing.original_available_to
         listing.is_rented = False  # Optional: mark as not rented
+        serialize = rental.serialize()
 
         db.session.delete(rental)
         db.session.commit()
-        return success_response(rental.serialize())
+        return success_response(serialize)
 
 
 if __name__ == "__main__":

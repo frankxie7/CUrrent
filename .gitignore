@@ -5,6 +5,7 @@ __pycache__/
 
 backend/venv/
 backend/.env
+backend.instance/
 
 frontend/build/
 backend/build/
