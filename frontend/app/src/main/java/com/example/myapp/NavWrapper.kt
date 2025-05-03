@@ -11,6 +11,8 @@ import com.example.myapp.ui.screens.CarDetailScreen
 import com.example.myapp.ui.screens.CheckoutScreen
 import com.example.myapp.ui.screens.DeliveryScreen
 import com.example.myapp.ui.screens.HomeScreen
+import com.example.myapp.ui.screens.ProfileScreen
+import com.example.myapp.ui.screens.AddListingScreen
 import com.example.myapp.viewmodel.HomeViewModel
 
 @Composable
@@ -24,33 +26,23 @@ fun NavWrapper() {
         composable("home") {
             HomeScreen(navController = navController)
         }
-
-        composable(
-            "carDetail/{carId}",
-            arguments = listOf(navArgument("carId") { type = NavType.StringType })
-        ) { backStackEntry ->
+        composable("carDetail/{carId}") { backStackEntry ->
             val carId = backStackEntry.arguments?.getString("carId") ?: ""
-            CarDetailScreen(
-                carId = carId,
-                navController = navController,
-                viewModel = hiltViewModel()
-            )
+            CarDetailScreen(carId = carId, navController = navController)
         }
-
-        composable(
-            "checkout/{carId}",
-            arguments = listOf(navArgument("carId") { type = NavType.StringType })
-        ) { backStackEntry ->
+        composable("checkout/{carId}") { backStackEntry ->
             val carId = backStackEntry.arguments?.getString("carId") ?: ""
             CheckoutScreen(carId = carId, navController = navController)
         }
-
-        composable(
-            "delivery/{carId}",
-            arguments = listOf(navArgument("carId") { type = NavType.StringType })
-        ) { backStackEntry ->
+        composable("delivery/{carId}") { backStackEntry ->
             val carId = backStackEntry.arguments?.getString("carId") ?: ""
             DeliveryScreen(carId = carId, navController = navController)
+        }
+        composable("profile") {
+            ProfileScreen(navController = navController)
+        }
+        composable("addListing") {
+            AddListingScreen(navController = navController)
         }
     }
 }

@@ -3,6 +3,8 @@ package com.example.myapp.ui.screens
 import android.app.DatePickerDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -18,6 +20,7 @@ import com.example.myapp.viewmodel.HomeViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckoutScreen(
     carId: String,
@@ -26,7 +29,7 @@ fun CheckoutScreen(
 ) {
     val listings by viewModel.listings.collectAsState(initial = emptyList())
     val car = listings.find { it.id.toString() == carId } ?: return
-    val reservationNumber = remember { "#R-${(100000..999999).random()}" }
+    val reservationNumber = remember { "#R-\${(100000..999999).random()}" }
 
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
@@ -49,58 +52,72 @@ fun CheckoutScreen(
         ).show()
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text(text = car.vehicle_type, fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .background(Color.LightGray)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("Reservation #: $reservationNumber", fontWeight = FontWeight.Medium)
-
-        Spacer(modifier = Modifier.height(24.dp))
-        Text("Select Dates", fontWeight = FontWeight.SemiBold)
-
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = { showDatePicker { startDate = it } }) {
-            Text(text = if (startDate.isEmpty()) "Pick Start Date" else "Start: $startDate")
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Checkout") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                }
+            )
         }
-
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = { showDatePicker { endDate = it } }) {
-            Text(text = if (endDate.isEmpty()) "Pick End Date" else "End: $endDate")
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-        Text("Enter Delivery Location", fontWeight = FontWeight.SemiBold)
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = location,
-            onValueChange = { location = it },
-            placeholder = { Text("e.g., 123 Main St, Ithaca NY") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Button(
-            onClick = {
-                navController.navigate("delivery/${car.id}")
-            },
+    ) { innerPadding ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(innerPadding)
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-            Text("Checkout")
+            Text(text = car.vehicle_type, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .background(Color.LightGray)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Reservation #: \$reservationNumber", fontWeight = FontWeight.Medium)
+
+            Spacer(modifier = Modifier.height(24.dp))
+            Text("Select Dates", fontWeight = FontWeight.SemiBold)
+
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(onClick = { showDatePicker { startDate = it } }) {
+                Text(text = if (startDate.isEmpty()) "Pick Start Date" else "Start: \$startDate")
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(onClick = { showDatePicker { endDate = it } }) {
+                Text(text = if (endDate.isEmpty()) "Pick End Date" else "End: \$endDate")
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            Text("Enter Delivery Location", fontWeight = FontWeight.SemiBold)
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = location,
+                onValueChange = { location = it },
+                placeholder = { Text("e.g., 123 Main St, Ithaca NY") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Button(
+                onClick = {
+                    navController.navigate("delivery/\${car.id}")
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+                Text("Checkout")
+            }
         }
     }
 }

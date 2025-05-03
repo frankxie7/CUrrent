@@ -10,6 +10,7 @@ data class Listing(
     val price_per_day: Double,
     val available_from: String,
     val available_to: String,
+    val owner_id: Int,
     val is_rented: Boolean
 )
 

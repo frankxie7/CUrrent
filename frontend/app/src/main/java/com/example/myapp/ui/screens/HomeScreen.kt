@@ -80,7 +80,9 @@ fun HomeScreen(
                     IconButton(onClick = { viewModel.refresh() }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }
-                    IconButton(onClick = { /* profile */ }) {
+                    IconButton(onClick = {
+                        navController.navigate("profile")
+                    }) {
                         Icon(Icons.Default.Person, contentDescription = "Profile")
                     }
                 }
