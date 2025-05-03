@@ -2,71 +2,31 @@ package com.example.myapp.ui.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.ExperimentalMaterial3Api // it may leave soon but wtv
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScrollableTabRow
-import androidx.compose.material3.Tab
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.myapp.retrofit.Listing
+import com.example.myapp.viewmodel.HomeViewModel
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material.icons.filled.Refresh
 
 enum class VehicleType { Car, Bike, Scooter }
-data class Car(
-    val id: String,
-    val name: String,
-    val type: VehicleType,
-    val pricePerDay: Double,
-    val description: String,
-    val listedDate: String,
-    val availability: String,
-    val pickupWindow: String,
-    val imageUrl: String,
-    val renterName: String,
-    val renterRating: Double
-)
-
-val allCars = listOf(
-    Car(
-        id = "1",
-        name = "Lightning McQueen",
-        type = VehicleType.Car,
-        pricePerDay = 120.0,
-        description = """Model: Rust-eze Lightning GT
-Top Speed: 200 mph (321 km/h)
-0–60 mph: 3.2 seconds
-Engine: V8 rear-mounted piston engine
-Horsepower: 750 hp
-Transmission: 6-speed manual with turbo boost override
-Fuel Type: 100% synthetic race fuel
-Tires: Lightyear racing slicks
-Special: Crew radio, trash talk cam, Kachow underglow""",
-        listedDate = "April 27, 2025, 3:45 PM",
-        availability = "April 29 – May 2, 2025",
-        pickupWindow = "8:00 AM – 8:00 PM",
-        imageUrl = "https://images.unsplash.com/photo-1603826561566-b1735c34c893",
-        renterName = "Owen Wilson",
-        renterRating = 5.0
-    )
-)
 
 @Composable
-fun CarListItem(car: Car, onClick: () -> Unit) {
+fun CarListItem(car: Listing, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -74,19 +34,29 @@ fun CarListItem(car: Car, onClick: () -> Unit) {
             .padding(12.dp)
     ) {
         Column(Modifier.weight(1f)) {
-            Text(text = car.name, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Text(text = "$${car.pricePerDay}/day", fontSize = 14.sp, fontWeight = FontWeight.Normal)
+            Text(text = car.vehicle_type, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(text = "$${car.price_per_day}/day", fontSize = 14.sp)
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@OptIn(ExperimentalMaterial3Api::class) // apparently this sht leaving soon
 fun HomeScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
+    val listings by viewModel.listings.collectAsState(initial = emptyList())
     var selectedType by remember { mutableStateOf(VehicleType.Car) }
-    val filteredCars = allCars.filter { it.type == selectedType }
+
+    val filteredCars = listings.filter {
+        it.vehicle_type.equals(selectedType.name, ignoreCase = true)
+    }
+
+    LaunchedEffect(Unit) {
+        println("UI listings count: ${listings.size}")
+        viewModel.refresh()
+    }
 
     Scaffold(
         topBar = {
@@ -103,18 +73,15 @@ fun HomeScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = { }) {
-                        Icon(
-                            Icons.Default.Menu,
-                            contentDescription = "Menu"
-                        )
+                        Icon(Icons.Default.Menu, contentDescription = "Menu")
                     }
                 },
                 actions = {
+                    IconButton(onClick = { viewModel.refresh() }) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                    }
                     IconButton(onClick = { /* profile */ }) {
-                        Icon(
-                            Icons.Default.Person,
-                            contentDescription = "Profile"
-                        )
+                        Icon(Icons.Default.Person, contentDescription = "Profile")
                     }
                 }
             )
@@ -138,12 +105,11 @@ fun HomeScreen(
             Spacer(Modifier.height(16.dp))
 
             LazyColumn {
-                items(filteredCars) { car -> // filter by type of car
+                items(filteredCars) { car ->
                     CarListItem(car = car) {
-                        println("Clicked on car ID: ${car.id}")
+                        viewModel.selectedListing = car
                         navController.navigate("carDetail/${car.id}")
                     }
-
                     HorizontalDivider()
                 }
             }

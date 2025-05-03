@@ -1,18 +1,23 @@
-package com.cornellappdev.introandroid.a6.retrofit
+package com.example.myapp.retrofit
 
-import com.example.demo6_starter.util.Sentiment
+import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Query
+
+// matches your backend's listing fields
+data class Listing(
+    val id: Int,
+    val vehicle_type: String,
+    val price_per_day: Double,
+    val available_from: String,
+    val available_to: String,
+    val is_rented: Boolean
+)
+
+data class ListingResponse(
+    val listings: List<Listing>
+)
 
 interface ApiService {
-    //TODO 1: Replace 'endpoint' below with the endpoint for the API you're using
-    @GET("endpoint")
-    suspend fun getData(
-        //TODO 2: Add queries and your api header
-    ) //TODO 4: Add the return type of your function here.
+    @GET("api/listings/")
+    suspend fun getListings(): Response<ListingResponse>
 }
-
-//TODO 3: Data class that models what the API will return
-
-//TODO (Optional): an empty version of your data class.

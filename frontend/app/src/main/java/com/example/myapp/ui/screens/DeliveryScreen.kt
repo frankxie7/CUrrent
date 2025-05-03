@@ -1,66 +1,66 @@
 package com.example.myapp.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import androidx.compose.foundation.clickable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.tooling.preview.Preview
+import com.example.myapp.viewmodel.HomeViewModel
 
 @Composable
 fun DeliveryScreen(
     carId: String,
-    navController: NavController
+    navController: NavController,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val car = allCars.find { it.id == carId } ?: return
+    val listings by viewModel.listings.collectAsState(initial = emptyList())
+    val car = listings.find { it.id.toString() == carId } ?: return
 
-    Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                Text(
-                    text = "✕",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .clickable {
-                            navController.popBackStack(route = "home", inclusive = false)
-                        }
-                )
-            }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Your ${car.vehicle_type} is on the way!",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        )
 
-            Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
-            Text(
-                text = "Delivered to your door",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold
-            )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp)
+                .background(Color.Gray)
+        )
 
-            Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
-            Text(text = "Car: ${car.name}", fontSize = 18.sp, fontWeight = FontWeight.Medium)
-            Text(text = "Location: TBD", fontSize = 18.sp, fontWeight = FontWeight.Medium)
-            Text(text = "Rental Dates: TBD", fontSize = 18.sp, fontWeight = FontWeight.Medium)
-        }
+        Text(
+            text = "Estimated Arrival: 15 minutes",
+            fontSize = 18.sp
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "Delivery Location: 123 Main St, Ithaca NY",
+            fontSize = 16.sp,
+            color = Color.DarkGray
+        )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DeliveryScreenPreview() {
-    val dummyNavController = rememberNavController()
-    DeliveryScreen(
-        carId = "1",
-        navController = dummyNavController
-    )
 }

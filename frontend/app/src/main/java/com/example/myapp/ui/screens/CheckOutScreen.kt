@@ -11,18 +11,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.myapp.ui.screens.allCars
+import com.example.myapp.viewmodel.HomeViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
 fun CheckoutScreen(
     carId: String,
-    navController: NavController
+    navController: NavController,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val car = allCars.find { it.id == carId } ?: return
+    val listings by viewModel.listings.collectAsState(initial = emptyList())
+    val car = listings.find { it.id.toString() == carId } ?: return
     val reservationNumber = remember { "#R-${(100000..999999).random()}" }
 
     val context = LocalContext.current
@@ -51,7 +54,7 @@ fun CheckoutScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(text = car.name, fontWeight = FontWeight.Bold)
+        Text(text = car.vehicle_type, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
 
         Box(
