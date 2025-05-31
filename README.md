@@ -2,9 +2,9 @@
 
 A cornell rental app for cars and bikes.
 
-## Installation
+## Deployment
 
-TBD
+Previously deployed using GCP.
 
 ## Authors
 
